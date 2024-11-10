@@ -1,0 +1,201 @@
+<div class="grid grid-cols-12 h-screen w-screen bg-gray-100">
+  <div
+    class="lg:col-span-8 col-span-12 flex justify-center items-center py-8 px-4"
+  >
+    <form
+      [formGroup]="dynamicForm"
+      (ngSubmit)="onSubmit()"
+      class="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl space-y-6"
+    >
+      <h2 class="text-2xl font-semibold text-center mb-4">
+        Dynamic Form Builder
+      </h2>
+      <ng-container *ngIf="!formFields.length">
+        <h4 class="text-2xl flex justify-center mt-8 text-gray-600">
+          Please Add Field from&nbsp;<span class="lg:block hidden">Right</span
+          >&nbsp;<span class="lg:hidden block">Bottom</span>&nbsp;Side
+        </h4>
+      </ng-container>
+      <div
+        *ngFor="let field of formFields; let i = index"
+        class="relative flex flex-col mb-4"
+      >
+        <div class="flex items-center">
+          <ng-container [ngSwitch]="field.type">
+            <nz-form-item *ngSwitchCase="'text'" class="w-full">
+              <nz-form-label
+                [nzFor]="'field-' + i"
+                class="block text-gray-700 mb-1"
+                >{{ field.label }}</nz-form-label
+              >
+              <nz-form-control>
+                <input
+                  nz-input
+                  type="text"
+                  [formControlName]="field.name"
+                  [placeholder]="field.placeholder"
+                  class="w-full"
+                />
+                <div
+                  *ngIf="
+                    dynamicForm.controls[field.name].invalid &&
+                    dynamicForm.controls[field.name].touched
+                  "
+                  class="text-red-500 mt-1"
+                >
+                  {{ field.validationMessage }}
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item *ngSwitchCase="'textarea'" class="w-full">
+              <nz-form-label
+                [nzFor]="'field-' + i"
+                class="block text-gray-700 mb-1"
+                >{{ field.label }}</nz-form-label
+              >
+              <nz-form-control>
+                <textarea
+                  nz-input
+                  [formControlName]="field.name"
+                  [placeholder]="field.placeholder"
+                  class="w-full"
+                ></textarea>
+                <div
+                  *ngIf="
+                    dynamicForm.controls[field.name].invalid &&
+                    dynamicForm.controls[field.name].touched
+                  "
+                  class="text-red-500 mt-1"
+                >
+                  {{ field.validationMessage }}
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item *ngSwitchCase="'dropdown'" class="w-full">
+              <nz-form-label
+                [nzFor]="'field-' + i"
+                class="block text-gray-700 mb-1"
+                >{{ field.label }}</nz-form-label
+              >
+              <nz-form-control>
+                <nz-select
+                  [formControlName]="field.name"
+                  nzPlaceHolder="{{ field.placeholder }}"
+                  class="w-full"
+                >
+                  <nz-option
+                    *ngFor="let option of field.options"
+                    [nzLabel]="option.option"
+                    [nzValue]="option.option"
+                  ></nz-option>
+                </nz-select>
+                <div
+                  *ngIf="
+                    dynamicForm.controls[field.name].invalid &&
+                    dynamicForm.controls[field.name].touched
+                  "
+                  class="text-red-500 mt-1"
+                >
+                  {{ field.validationMessage }}
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item *ngSwitchCase="'radio'" class="w-full">
+              <nz-form-label
+                [nzFor]="'field-' + i"
+                class="block text-gray-700 mb-1"
+                >{{ field.label }}</nz-form-label
+              >
+              <nz-form-control>
+                <nz-radio-group
+                  [formControlName]="field.name"
+                  class="w-full flex flex-col space-y-2"
+                >
+                  <label
+                    *ngFor="let option of field.options"
+                    nz-radio
+                    [nzValue]="option.option"
+                  >
+                    {{ option.option }}
+                  </label>
+                </nz-radio-group>
+                <div
+                  *ngIf="
+                    dynamicForm.controls[field.name].invalid &&
+                    dynamicForm.controls[field.name].touched
+                  "
+                  class="text-red-500 mt-1"
+                >
+                  {{ field.validationMessage }}
+                </div>
+              </nz-form-control>
+            </nz-form-item>
+          </ng-container>
+
+          <button
+            type="button"
+            (click)="removeField(i)"
+            class="text-red-500 text-2xl ml-3 mb-[24px] hover:text-red-700"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="text-center">
+        <button
+          *ngIf="formFields.length"
+          nz-button
+          nzType="primary"
+          type="submit"
+          [disabled]="dynamicForm.invalid"
+          class="px-6 py-2"
+        >
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div
+    class="lg:border-l border-gray-300 lg:col-span-4 col-span-12 flex flex-col items-center py-8 px-4 bg-white shadow-inner"
+  >
+    <h2 class="text-xl font-semibold mb-4">Add Field</h2>
+    <div class="space-y-3">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="addField('text')"
+        class="w-full"
+      >
+        Add Text Field
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="addField('textarea')"
+        class="w-full"
+      >
+        Add Text Area
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="addField('dropdown')"
+        class="w-full"
+      >
+        Add Dropdown
+      </button>
+      <button
+        nz-button
+        nzType="primary"
+        (click)="addField('radio')"
+        class="w-full"
+      >
+        Add Radio Button
+      </button>
+    </div>
+  </div>
+</div>
