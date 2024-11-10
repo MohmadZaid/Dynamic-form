@@ -29,6 +29,7 @@ export class AppComponent {
 
   ngOnInit(): void {
     this.dynamicForm = this.fb.group({});
+    console.log(this.dynamicForm.value);
   }
 
   addField(type: string) {
@@ -76,10 +77,13 @@ export class AppComponent {
 
   onSubmit() {
     if (this.dynamicForm.valid) {
+      this.message.success('Form Submit Successfully');
       console.log(this.dynamicForm.value);
       this.dynamicForm.reset();
+      this.formFields.forEach((field) => {
+        this.dynamicForm.removeControl(field.name);
+      });
       this.formFields = [];
-      this.message.success('Form Submit Successfully');
     }
   }
 }
